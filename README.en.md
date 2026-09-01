@@ -56,16 +56,10 @@ When a real consumer exists, a boundary remains unresolved, or a proposal merely
 
 ## Install
 
-Ask Codex to install it:
-
-```text
-Install the simplify-codebase skill from https://github.com/tt-a1i/simplify-codebase
-```
-
-Or clone it into the Codex user Skill directory:
+Clone it into the Codex user Skill directory:
 
 ```bash
-git clone https://github.com/tt-a1i/simplify-codebase.git \
+git clone <your-repo-url> \
   ~/.codex/skills/simplify-codebase
 ```
 

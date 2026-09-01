@@ -54,16 +54,10 @@
 
 ## 安装
 
-让 Codex 安装：
-
-```text
-Install the simplify-codebase skill from https://github.com/tt-a1i/simplify-codebase
-```
-
-也可以手动安装到 Codex 的用户级 Skill 目录：
+手动安装到 Codex 的用户级 Skill 目录：
 
 ```bash
-git clone https://github.com/tt-a1i/simplify-codebase.git \
+git clone <你的仓库地址> \
   ~/.codex/skills/simplify-codebase
 ```
 
