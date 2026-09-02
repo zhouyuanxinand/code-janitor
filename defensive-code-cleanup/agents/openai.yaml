@@ -1,0 +1,7 @@
+interface:
+  display_name: "Defensive Code Cleanup"
+  short_description: "Remove proven AI-generated guardrail code"
+  default_prompt: "Use $defensive-code-cleanup to inspect AI-generated defensive code. First show the cleanup categories and let me choose the scope."
+
+policy:
+  allow_implicit_invocation: true
