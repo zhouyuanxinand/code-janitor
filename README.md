@@ -1,6 +1,6 @@
 <div align="center">
 
-# Simplify Codebase
+# Code Janitor
 
 **先证明，再删除。让代码库少维护一些事实、状态与契约。**
 
@@ -13,7 +13,12 @@
 
 </div>
 
-`simplify-codebase` 是一个面向现有代码库的 Agent Skill。它帮助编码智能体识别并安全移除偶然复杂度，同时保护仍然有效的行为、边界与兼容性。
+本仓库提供两个彼此独立的 Agent Skill：
+
+- `simplify-codebase`：面向现有代码库，识别并安全移除偶然复杂度，同时保护仍然有效的行为、边界与兼容性。
+- `defensive-code-cleanup`：专门处理 AI 修改过程中产生的测试、构建、CI、静态检查和其他防回退层；先由用户选择清理类别，再证明并移除维护性负担。
+
+两个 Skill 不会互相调用、修改或依赖。面对普通代码瘦身选择 `simplify-codebase`；面对“AI 修改防回退层”选择 `defensive-code-cleanup`。
 
 它不追求“删得多”。它关心的是：一次改动能否减少团队今后必须持续保持一致的概念和义务。
 
@@ -54,14 +59,19 @@
 
 ## 安装
 
-手动安装到 Codex 的用户级 Skill 目录：
+先克隆本仓库，再将需要的 Skill 子目录安装到 Codex 的用户级 Skill 目录。两个 Skill 可以独立安装：
 
 ```bash
-git clone <你的仓库地址> \
-  ~/.codex/skills/simplify-codebase
+git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.codex/skills/code-janitor
+
+# 安装通用代码简化 Skill
+cp -R ~/.codex/skills/code-janitor ~/.codex/skills/simplify-codebase
+
+# 安装 AI 防回退代码清理 Skill
+cp -R ~/.codex/skills/code-janitor/defensive-code-cleanup ~/.codex/skills/defensive-code-cleanup
 ```
 
-安装后请新建一个任务，让 Skill 目录重新加载。其他支持 `SKILL.md` 的 Agent 环境可将本仓库放入各自的 Skill 目录。
+Windows 用户可使用资源管理器复制对应目录，或使用 PowerShell 的 `Copy-Item -Recurse` 完成相同操作。安装后请新建一个任务，让 Skill 目录重新加载。其他支持 `SKILL.md` 的 Agent 环境可将对应子目录放入各自的 Skill 目录。
 
 ## 使用
 
@@ -89,11 +99,25 @@ git clone <你的仓库地址> \
 使用 $simplify-codebase 复核并整合这个 PR 中的简化建议。保留证据，不保留候选数量。
 ```
 
+### 清理 AI 修改防回退层
+
+```text
+使用 $defensive-code-cleanup 审计这个仓库里的 AI 修改防回退代码。先列出类别让我选择，不要修改文件。
+```
+
+```text
+使用 $defensive-code-cleanup 清理测试防回退层、构建部署与 CI 防回退层、静态检查脚本与清单。保留业务、API、安全、数据完整性和真实部署行为。
+```
+
+`defensive-code-cleanup` 支持测试防回退层、构建/部署/CI 防回退层、静态检查防回退层、兼容与中继层、运行时防御路径和自定义范围。运行时重试、回退、修复和恢复路径风险较高，只有在用户明确授权且证据证明不再保护真实边界时才处理。
+
 ## 输出是什么样的
 
 只读审计会交付覆盖范围、排序后的证明记录、重要反例、未决问题和下一条所需证据。
 
 修改任务会额外交付实际变更、分层验证结果、剩余风险、操作回执与可执行的撤销路径。一次小范围测试通过，不会被包装成完整的运行时或用户验收。
+
+如果用户授权生成 Handoff，防回退清理必须逐项记录每个删除文件、删除符号或删除区段：原本作用、防回退职责、消费者证据、为何安全删除、保留的行为、重新引入条件和验证结果。不能只写“删除了测试”或“删除了脚本”等分类汇总。
 
 ## 仓库结构
 
@@ -108,14 +132,18 @@ git clone <你的仓库地址> \
 │   ├── decision-records.md
 │   └── integrating-findings.md
 ├── docs/validation.md          # 行为验证与质量证据
-└── assets/hero.png             # 原创 Hero 视觉
+├── assets/hero.png             # 原创 Hero 视觉
+└── defensive-code-cleanup/     # 独立的 AI 防回退代码清理 Skill
+    ├── SKILL.md
+    ├── agents/openai.yaml
+    └── references/
 ```
 
 ## 质量与边界
 
 这个版本经过 Change、Broad、Integration 和 Decision-record 场景验证，也在一个 973 文件的 Python + TypeScript 项目上完成过全库审计。测试方法与已知边界记录在 [docs/validation.md](./docs/validation.md)。
 
-Skill 不能替代产品决策。删除仍然可达的能力、已支持接口、持久化表示或兼容路径时，仍需由使用者明确授权。
+Skill 不能替代产品决策。删除仍然可达的能力、已支持接口、持久化表示或兼容路径时，仍需由使用者明确授权。`defensive-code-cleanup` 也不能把安全校验、凭据处理、数据完整性、访问隔离或持久化恢复误判为普通 AI 防回退代码。
 
 ## 贡献
 
