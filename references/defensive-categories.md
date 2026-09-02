@@ -1,6 +1,6 @@
-# Category Guide
+# AI Defensive-Layer Categories
 
-Select only the categories the user chose. A category identifies where to investigate; it never proves that removal is safe.
+Read this reference only after the user selects the AI defensive-layer cleanup objective. A category identifies where to investigate; it never proves that removal is safe.
 
 ## 1. Test guardrails
 

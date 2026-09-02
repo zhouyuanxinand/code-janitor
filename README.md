@@ -13,14 +13,29 @@
 
 </div>
 
-本仓库提供两个彼此独立的 Agent Skill：
+本仓库提供一个统一的 `code-janitor` Agent Skill，包含两个互不混用的处理目标：
 
-- `simplify-codebase`：面向现有代码库，识别并安全移除偶然复杂度，同时保护仍然有效的行为、边界与兼容性。
-- `defensive-code-cleanup`：专门处理 AI 修改过程中产生的测试、构建、CI、静态检查和其他防回退层；先由用户选择清理类别，再证明并移除维护性负担。
+- **普通代码简化**：识别并安全移除偶然复杂度，同时保护仍然有效的行为、边界与兼容性。
+- **AI 防回退层清理**：处理 AI 修改过程中产生的测试、构建、CI、静态检查和其他防回退层；先选择防回退类别，再证明并移除维护性负担。
 
-两个 Skill 不会互相调用、修改或依赖。面对普通代码瘦身选择 `simplify-codebase`；面对“AI 修改防回退层”选择 `defensive-code-cleanup`。
+两个目标共享消费者分析、边界证明和分层验证流程，但必须先选择目标，不在同一批次中混淆删除边界。
 
 它不追求“删得多”。它关心的是：一次改动能否减少团队今后必须持续保持一致的概念和义务。
+
+| 处理目标 | 适用场景 | 不会处理的内容 |
+| --- | --- | --- |
+| 普通代码简化 | 死代码、重复状态、失主抽象、过期兼容层和不必要的分层 | 仅做格式化、普通代码审查或性能调优 |
+| AI 防回退层清理 | 为保护 AI 改动而临时增加的测试、构建/CI 守卫、静态扫描和清单 | 仍保护真实业务、API、安全、数据或部署边界的代码 |
+
+## 快速开始
+
+1. 从下方选择一个目标 Harness 的目录安装，目录必须叫 `code-janitor`。
+2. 新建任务并明确选择处理目标；目标不明确时，Skill 会先询问，不会直接删除代码。
+3. 先用只读审计建立候选和反证，再授权修改；防回退层清理需要先选定类别。
+
+```text
+使用 $code-janitor 处理这个仓库。先让我选择：普通代码简化，还是 AI 修改防回退层清理；不要修改文件。
+```
 
 ## 为什么需要它
 
@@ -59,57 +74,70 @@
 
 ## 安装
 
-先克隆本仓库，再将需要的 Skill 子目录安装到 Codex 的用户级 Skill 目录。两个 Skill 可以独立安装：
+该包使用通用 Agent Skills 目录形态，并要求安装目录名为 `code-janitor`。已对齐 Codex、Claude Code、Cursor、GitHub Copilot、Cline、Gemini CLI 与 OpenCode；选择你的 harness 对应的一条命令执行即可：
 
 ```bash
+# Codex（用户级）
 git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.codex/skills/code-janitor
 
-# 安装通用代码简化 Skill
-cp -R ~/.codex/skills/code-janitor ~/.codex/skills/simplify-codebase
+# Claude Code（用户级）
+git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.claude/skills/code-janitor
 
-# 安装 AI 防回退代码清理 Skill
-cp -R ~/.codex/skills/code-janitor/defensive-code-cleanup ~/.codex/skills/defensive-code-cleanup
+# Cursor / 通用项目级 Agent Skills
+git clone https://github.com/zhouyuanxinand/code-janitor.git .agents/skills/code-janitor
+
+# GitHub Copilot（项目级）
+git clone https://github.com/zhouyuanxinand/code-janitor.git .github/skills/code-janitor
+
+# Cline（项目级）
+git clone https://github.com/zhouyuanxinand/code-janitor.git .cline/skills/code-janitor
+
+# Gemini CLI（项目级）
+git clone https://github.com/zhouyuanxinand/code-janitor.git .gemini/skills/code-janitor
+
+# OpenCode（项目级）
+git clone https://github.com/zhouyuanxinand/code-janitor.git .opencode/skills/code-janitor
 ```
 
-Windows 用户可使用资源管理器复制对应目录，或使用 PowerShell 的 `Copy-Item -Recurse` 完成相同操作。安装后请新建一个任务，让 Skill 目录重新加载。其他支持 `SKILL.md` 的 Agent 环境可将对应子目录放入各自的 Skill 目录。
+安装后按平台刷新/重启 Skill 目录。完整的作用域、发现规则、验证方法、优先级和旧 `$simplify-codebase` 入口的迁移说明见 [跨 Harness 兼容性](./docs/harness-compatibility.md)。同一项目只应在一个预期优先级目录保留一份同名 Skill，除非明确需要覆盖。
 
 ## 使用
 
 ### 审计整个仓库，不改文件
 
 ```text
-使用 $simplify-codebase 审计这个仓库，列出最安全、收益最高的简化候选。不要修改文件。
+使用 $code-janitor 审计这个仓库，列出最安全、收益最高的简化候选。不要修改文件。
 ```
 
 ### 调查一个具体问题
 
 ```text
-使用 $simplify-codebase 判断这些 readiness 标志是在表达不同的生命周期保证，还是重复状态。
+使用 $code-janitor 判断这些 readiness 标志是在表达不同的生命周期保证，还是重复状态。
 ```
 
 ### 实施一个已经证明安全的简化
 
 ```text
-使用 $simplify-codebase 删除一个高置信度的偶然复杂度来源。保留仍然有效的契约，完成验证，并给出操作回执和撤销路径。
+使用 $code-janitor 删除一个高置信度的偶然复杂度来源。保留仍然有效的契约，完成验证，并给出操作回执和撤销路径。
 ```
 
 ### 合并其他分支或 Agent 的发现
 
 ```text
-使用 $simplify-codebase 复核并整合这个 PR 中的简化建议。保留证据，不保留候选数量。
+使用 $code-janitor 复核并整合这个 PR 中的简化建议。保留证据，不保留候选数量。
 ```
 
-### 清理 AI 修改防回退层
+### 选择 AI 防回退层清理目标
 
 ```text
-使用 $defensive-code-cleanup 审计这个仓库里的 AI 修改防回退代码。先列出类别让我选择，不要修改文件。
+使用 $code-janitor 处理这个仓库。先让我选择：普通代码简化，还是 AI 修改防回退层清理；不要修改文件。
 ```
 
 ```text
-使用 $defensive-code-cleanup 清理测试防回退层、构建部署与 CI 防回退层、静态检查脚本与清单。保留业务、API、安全、数据完整性和真实部署行为。
+选择 AI 修改防回退层清理。清理测试防回退层、构建部署与 CI 防回退层、静态检查脚本与清单。保留业务、API、安全、数据完整性和真实部署行为。
 ```
 
-`defensive-code-cleanup` 支持测试防回退层、构建/部署/CI 防回退层、静态检查防回退层、兼容与中继层、运行时防御路径和自定义范围。运行时重试、回退、修复和恢复路径风险较高，只有在用户明确授权且证据证明不再保护真实边界时才处理。
+AI 防回退层模式支持测试防回退层、构建/部署/CI 防回退层、静态检查防回退层、兼容与中继层、运行时防御路径和自定义范围。运行时重试、回退、修复和恢复路径风险较高，只有在用户明确授权且证据证明不再保护真实边界时才处理。
 
 ## 输出是什么样的
 
@@ -130,20 +158,20 @@ Windows 用户可使用资源管理器复制对应目录，或使用 PowerShell 
 │   ├── boundaries-and-lifecycle.md
 │   ├── execution-and-recovery.md
 │   ├── decision-records.md
-│   └── integrating-findings.md
+│   ├── integrating-findings.md
+│   ├── defensive-categories.md
+│   └── defensive-proof-and-delivery.md
 ├── docs/validation.md          # 行为验证与质量证据
+├── docs/harness-compatibility.md # 跨平台安装与验证
 ├── assets/hero.png             # 原创 Hero 视觉
-└── defensive-code-cleanup/     # 独立的 AI 防回退代码清理 Skill
-    ├── SKILL.md
-    ├── agents/openai.yaml
-    └── references/
+└── LICENSE
 ```
 
 ## 质量与边界
 
-这个版本经过 Change、Broad、Integration 和 Decision-record 场景验证，也在一个 973 文件的 Python + TypeScript 项目上完成过全库审计。测试方法与已知边界记录在 [docs/validation.md](./docs/validation.md)。
+这个版本经过 Change、Broad、Integration 和 Decision-record 场景验证，也在一个 973 文件的 Python + TypeScript 项目上完成过全库审计。测试方法与已知边界记录在 [docs/validation.md](./docs/validation.md)。跨 harness 的目录与元数据契约见 [docs/harness-compatibility.md](./docs/harness-compatibility.md)。
 
-Skill 不能替代产品决策。删除仍然可达的能力、已支持接口、持久化表示或兼容路径时，仍需由使用者明确授权。`defensive-code-cleanup` 也不能把安全校验、凭据处理、数据完整性、访问隔离或持久化恢复误判为普通 AI 防回退代码。
+Skill 不能替代产品决策。删除仍然可达的能力、已支持接口、持久化表示或兼容路径时，仍需由使用者明确授权。AI 防回退模式也不能把安全校验、凭据处理、数据完整性、访问隔离或持久化恢复误判为普通防回退代码。
 
 ## 贡献
 

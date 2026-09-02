@@ -1,4 +1,4 @@
-# Proof and Delivery
+# Defensive Cleanup Proof and Delivery
 
 ## Candidate record
 
@@ -24,11 +24,11 @@ Do not treat an unreferenced file as proven dead until dynamic imports, package 
 3. Search for removed symbols, paths, configuration keys, and documentation residue.
 4. Run the targeted behavior check, then affected build/type/lint/test/smoke checks.
 5. Inspect the diff and working-tree status. Do not stage generated runtime data or unrelated user changes.
-6. If a handoff note is authorized, use an itemized deletion ledger. Do not collapse multiple files into a category summary.
+6. If a Handoff note is authorized, use an itemized deletion ledger. Do not collapse multiple files into a category summary.
 
 ## Handoff deletion ledger
 
-The handoff note must contain one entry for every deleted file and every materially deleted symbol or section in a retained file. A table is preferred:
+The Handoff note must contain one entry for every deleted file and every materially deleted symbol or section in a retained file. A table is preferred:
 
 ```text
 Deleted path or retained file + removed symbol/section: exact repository-relative path and name

@@ -1,8 +1,8 @@
 # Validation / 验证记录
 
-本文档记录 `simplify-codebase` 在首次开源前完成的行为验证。它不是永久质量声明；仓库和 Agent 运行时变化后，应重新验证相关结论。
+本文档记录统一 `code-janitor` Skill 在首次开源和 AI 防回退模式重构时完成的行为验证。它不是永久质量声明；仓库和 Agent 运行时变化后，应重新验证相关结论。
 
-This document records the behavioral validation completed before the initial open-source release. It is not a permanent quality claim; relevant results should be rechecked as repositories and Agent runtimes evolve.
+This document records the behavioral validation completed before the initial open-source release and during the AI defensive-layer mode refactor. It is not a permanent quality claim; relevant results should be rechecked as repositories and Agent runtimes evolve.
 
 ## Scenarios / 场景
 
@@ -29,6 +29,12 @@ This document records the behavioral validation completed before the initial ope
 - Fixture: a retired frontend surface sharing a stylesheet with a surviving component.
 - Expected behavior: prove the cut below file granularity.
 - Result: the focused audit found 14 candidate-exclusive CSS classes, identified removable members inside mixed selectors, retained the shared stylesheet and surviving component, and found two stale documentation references.
+
+### AI defensive-layer cleanup
+
+- Fixture: a Python + TypeScript service containing implementation-shape tests, source-isolation scans, deployment contracts, a duplicate image conversion path, and active API/build behavior.
+- Expected behavior: remove only selected test, build/CI, and static-check guardrails; retain business APIs, input validation, credential handling, runtime lifecycle, and real frontend/backend verification.
+- Result: seven retained boundary/API tests passed; frontend tests (`143/143`), frontend build, and six API smoke checks passed. The backend comparison changed from `365 passed, 30 failed` to `341 passed, 25 failed` after removing 29 guardrail cases; the remaining failures matched the known baseline categories.
 
 ## Mechanical checks / 机械检查
 

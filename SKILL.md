@@ -1,13 +1,25 @@
 ---
-name: simplify-codebase
-description: Simplification audit or authorized codebase simplification whose stated objective is to remove accidental complexity. Use for evidence-backed deletion or consolidation of dead code, duplicate state, redundant APIs or layers, ownerless abstractions, obsolete compatibility or design records, and over-engineering in any language; also use for 代码简化 or 熵回收. Do not use for general code review, onboarding, style-only refactoring, or performance tuning.
+name: code-janitor
+description: Audit or change an existing codebase through either ordinary simplification or cleanup of AI-generated defensive and anti-regression layers. First route the request to one objective, then use evidence-backed deletion while preserving live behavior, safety boundaries, and compatibility. Use for 代码简化、熵回收或 AI 修改防回退层清理; do not use for general code review, onboarding, style-only refactoring, or performance tuning.
 ---
 
-# Simplify Codebase
+# Code Janitor
 
-Reduce the number of concepts and obligations a codebase must keep coherent. Line-count reduction is supporting evidence, not the objective. A successful run may conclude that the inspected surface is already justified.
+Reduce the number of concepts and obligations a codebase must keep coherent. This Skill has two independent objectives: ordinary simplification and AI defensive-layer cleanup. Line-count reduction is supporting evidence, not the objective. A successful run may conclude that the inspected surface is already justified.
 
-## Select mode and scope
+## Select the objective, mode, and scope
+
+First identify the objective. If the user has not made it clear, ask them to choose one before inspecting or modifying files:
+
+1. **Ordinary simplification** — remove accidental complexity such as dead code, duplicate state, ownerless abstractions, redundant APIs or layers, obsolete compatibility paths, and over-engineering.
+2. **AI defensive-layer cleanup** — remove maintenance-only tests, build/deployment/CI guards, static source scans and inventories, or explicitly selected runtime defensive paths that were added to protect an AI-generated change from regression.
+
+Do not mix the objectives in one unreviewed cut. Both use the shared proof, boundary, authorization, and validation workflow below, but read only the references for the selected objective:
+
+- For ordinary simplification, use [investigation](references/investigation.md), [boundaries and lifecycle](references/boundaries-and-lifecycle.md), [execution and recovery](references/execution-and-recovery.md), and other references as their routing rules require.
+- For AI defensive-layer cleanup, after the user selects one or more defensive categories, read [defensive categories](references/defensive-categories.md) and, for Change mode, [defensive proof and delivery](references/defensive-proof-and-delivery.md).
+
+If the user selects both objectives, maintain separate candidate records, cut boundaries, and validation results.
 
 First choose the authority mode:
 
@@ -70,6 +82,8 @@ In Survey mode, stop after reporting the ranked evidence. Include important reje
 
 In Change mode, read [execution-and-recovery.md](references/execution-and-recovery.md) and select the strongest authorized cut. One ownership boundary is the default batch size, not a run limit: for an explicitly requested set of cuts, finish and validate each boundary before starting the next.
 
+For AI defensive-layer cleanup, a selected category authorizes investigation, not deletion of a live contract. Do not remove security, credential, validation, persistence, lifecycle, or real deployment behavior merely because it is defensive.
+
 If the user requests a simplification proposal, local cleanup annotation, or design-record consolidation, or if a selected change invalidates an ADR, RFC, design note, or architectural inventory, read [decision-records.md](references/decision-records.md). Do not turn an ordinary code audit into a repository-wide documentation purge.
 
 If the user asks to combine findings from another branch, pull request, task, or agent run, read [integrating-findings.md](references/integrating-findings.md). Preserve evidence, not finding counts.
@@ -79,3 +93,5 @@ If the user asks to combine findings from another branch, pull request, task, or
 For a survey, report coverage, ranked proof records, rejected or unresolved high-value leads, and the next fact needed for each uncertainty.
 
 For a change, complete the validation and operation receipt defined in [execution-and-recovery.md](references/execution-and-recovery.md). Report each validation layer separately; a narrow green check does not establish broader runtime, deployment, or user acceptance.
+
+For AI defensive-layer cleanup, if the user authorizes a Handoff note, enumerate every deleted file and every materially deleted symbol or section in a retained file. For each entry state its original role, defensive obligation, consumer evidence, reason it was safe to remove, retained behavior, reintroduction trigger, and verification. Follow [defensive proof and delivery](references/defensive-proof-and-delivery.md).
