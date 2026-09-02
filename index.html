@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Janitor — 先证明，再删除</title>
+<meta name="description" content="Code Janitor 是一个证据驱动的 Agent Skill：普通代码简化与 AI 防回退层清理。先只读审计、为每个候选建立证明记录，授权后才动手，分层验证并给出撤销路径。支持 Codex、Claude Code、Cursor、Copilot、Cline、Gemini CLI、OpenCode。">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png?v=1">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=1">
+<meta property="og:title" content="Code Janitor — 先证明，再删除">
+<meta property="og:description" content="证据驱动的 Agent Skill：普通代码简化与 AI 防回退层清理。删除代码行只是结果，真正的收益是删除一个需要长期维护的事实、状态、契约或概念。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zhouyuanxinand.github.io/code-janitor/">
+<meta property="og:image" content="https://zhouyuanxinand.github.io/code-janitor/assets/og.jpg?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fafaf7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top"><img src="assets/logo.png" alt="Code Janitor logo">Code Janitor</a>
+    <div class="nav-links">
+      <a href="#objectives">两种目标</a>
+      <a href="#proof">证明</a>
+      <a href="#caution">边界</a>
+      <a href="#validation">验证</a>
+      <a href="#usage">使用</a>
+      <a href="#install">安装</a>
+    </div>
+    <div class="nav-right">
+      <a class="lang-switch" href="en/">EN</a>
+      <a class="gh-btn" href="https://github.com/zhouyuanxinand/code-janitor" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="eyebrow">Agent Skill · 证据驱动 · MIT</span>
+    <h1>先证明，<em>再删除</em>。</h1>
+    <p class="lede">Code Janitor 是一个统一的 Agent Skill，做两件事：普通代码简化，和 AI 修改防回退层清理。它不追求"删得多"——它关心一次改动能否减少团队今后必须持续保持一致的概念和义务。</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#install">装上它</a>
+      <a class="btn btn-ghost" href="https://github.com/zhouyuanxinand/code-janitor/blob/main/SKILL.md" target="_blank" rel="noopener">读 SKILL.md</a>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><span class="step-num">01</span><p>选定目标：普通简化，还是 AI 防回退层清理——不混批</p></div>
+      <div class="step reveal"><span class="step-num">02</span><p>只读审计，为每个候选建立证明记录</p></div>
+      <div class="step reveal"><span class="step-num">03</span><p>授权后才动手，分层验证并给出撤销路径</p></div>
+    </div>
+  </div>
+</header>
+
+<section id="visual" style="padding-top:0;">
+  <div class="wrap">
+    <div class="prism-frame reveal">
+      <img src="assets/hero.jpg" alt="复杂的软件结构经过证据验证后，收敛为更小、更清晰的系统" loading="lazy">
+    </div>
+    <p class="prism-note reveal">复杂的软件结构经过证据验证后，收敛为更小、更清晰的系统。</p>
+  </div>
+</section>
+
+<section id="objectives" style="background:var(--card); border-block:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">两种目标</span>
+      <h2>一次只扫一个目标。</h2>
+      <p class="sub">两个目标共享消费者分析、边界证明和分层验证流程，但必须先选择，不在同一批次中混淆删除边界。</p>
+    </div>
+    <div class="obj-grid">
+      <div class="obj reveal">
+        <span class="tag">objective 1</span>
+        <h3>普通代码简化</h3>
+        <p>识别并安全移除偶然复杂度，同时保护仍然有效的行为、边界与兼容性。</p>
+        <div class="scope">
+          <b>处理</b>
+          <div class="yes">死代码、重复状态、失主抽象</div>
+          <div class="yes">冗余 API 与不必要的分层</div>
+          <div class="yes">过期兼容层与过度工程</div>
+        </div>
+        <div class="scope">
+          <b>不处理</b>
+          <div class="no">仅做格式化、普通代码审查</div>
+          <div class="no">性能调优</div>
+        </div>
+      </div>
+      <div class="obj reveal">
+        <span class="tag">objective 2</span>
+        <h3>AI 防回退层清理</h3>
+        <p>处理 AI 修改过程中产生的防回退层：先选择类别，再证明并移除维护性负担。</p>
+        <div class="scope">
+          <b>处理</b>
+          <div class="yes">为保护 AI 改动而加的测试</div>
+          <div class="yes">构建 / 部署 / CI 守卫</div>
+          <div class="yes">静态扫描脚本与清单</div>
+        </div>
+        <div class="scope">
+          <b>不处理</b>
+          <div class="no">仍保护真实业务、API 的代码</div>
+          <div class="no">安全、数据、部署边界的守卫</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="trace">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">为什么静态检查不够</span>
+      <h2>lint 给的是线索，不是证明。</h2>
+      <p class="sub">"没人调用"不等于"可以删"。Code Janitor 会继续追踪这些表面，再决定删除、合并、保留，还是标记为暂时无法判断。</p>
+    </div>
+    <div class="trace-grid">
+      <div class="trace reveal"><span class="k">runtime</span><h3>运行时消费者</h3><p>从入口出发，穿过配置、注册、分发，追踪到真正的运行路径。</p></div>
+      <div class="trace reveal"><span class="k">dynamic</span><h3>动态注册与插件</h3><p>反射、插件表、字符串引用——编译器看不见的可达性。</p></div>
+      <div class="trace reveal"><span class="k">persisted</span><h3>持久化格式</h3><p>存储表示、迁移与回放：删掉一个字段，旧数据可能读不回。</p></div>
+      <div class="trace reveal"><span class="k">public</span><h3>公共接口</h3><p>包边界、wire 格式与外部消费者，仓库内搜不到他们。</p></div>
+      <div class="trace reveal"><span class="k">history</span><h3>历史决策</h3><p>ADR、RFC 与架构约束仍然有效时，设计就不是冗余。</p></div>
+      <div class="trace reveal"><span class="k">verify</span><h3>验证边界</h3><p>哪个最小验证能揭示错误删除？答不上来，就不动手。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="proof" class="dark">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">证明记录</span>
+      <h2>每个候选，一份证明。</h2>
+      <p class="sub">九个字段，把"我觉得可以删"变成可复核的证据。证明不完备，候选就留在原地。</p>
+    </div>
+    <div class="proof-box reveal">
+      <div class="proof-head"><span>proof-record.md</span><span>survey · broad</span></div>
+      <pre><span class="f">Candidate</span>     要移除或合并的确切契约、表示或层
+<span class="f">Burden</span>        它制造的概念、同步、发布或测试成本
+<span class="f">Reachability</span>  生产 / 非生产 / 动态 / 外部 / 持久化消费者
+<span class="f">Rationale</span>     它为何存在，那个理由今天是否还成立
+<span class="f">Cut</span>           受影响的声明、实现、分支、产物、文档、依赖
+<span class="f">Consequence</span>   放弃哪些可观察能力或兼容性
+<span class="f">Confidence</span>    证据强度、不确定性、爆炸半径、可逆性
+<span class="f">Proof</span>         能暴露错误删除的最小检查
+<span class="f">Net effect</span>    移除的维护概念 − 新引入的迁移或替代机制</pre>
+    </div>
+    <p class="dark-quote reveal">删除代码行只是结果。真正的收益，是删除一个<i>需要长期维护的事实、状态、契约或概念</i>。高价值的猜测，排不过一个小的、已证明的删除。</p>
+  </div>
+</section>
+
+<section id="caution">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">它会谨慎对待</span>
+      <h2>这些边界，它绕着走。</h2>
+    </div>
+    <div class="caut-grid">
+      <div class="caut reveal"><h3>公共 API 与插件注册</h3><p>动态加载、注册表条目、对外发布的接口。</p></div>
+      <div class="caut reveal"><h3>数据格式与迁移</h3><p>持久化表示、回放、向后兼容路径。</p></div>
+      <div class="caut reveal"><h3>授权与输入校验</h3><p>隔离、凭据、数据丢失防护——安全代码不是防回退层。</p></div>
+      <div class="caut reveal"><h3>并发与生命周期</h3><p>取消、清理、所有权：让系统归于静默的代码。</p></div>
+      <div class="caut reveal"><h3>生成文件与外部消费者</h3><p>共享资源、vendor 代码、仓库外的引用方。</p></div>
+      <div class="caut reveal"><h3>仍然有效的 ADR</h3><p>历史决策记录仍在管辖的设计，不是待删的债务。</p></div>
+    </div>
+    <p class="caut-note reveal">发现真实消费者、边界尚未查清，或者简化只是把复杂度搬到别处时，它会建议<b>保留</b>——而不是为了输出结果强行删除。</p>
+  </div>
+</section>
+
+<section id="validation" style="background:var(--card); border-block:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">验证记录</span>
+      <h2>不是口号，是跑过的场景。</h2>
+    </div>
+    <div class="stat-grid">
+      <div class="stat reveal"><div class="n">973</div><div class="l">个文件的生产仓库（Python + TypeScript）完成全库分区审计，工作区保持干净</div></div>
+      <div class="stat reveal"><div class="n">143/143</div><div class="l">前端测试在防回退清理后全绿，另加 6 项 API 冒烟检查通过</div></div>
+      <div class="stat reveal"><div class="n">29</div><div class="l">个防回退用例被安全移除，后端失败分布与已知基线一致</div></div>
+      <div class="stat reveal"><div class="n">14</div><div class="l">个候选专属 CSS 类在共享样式表中被逐成员证明，文件本身保留</div></div>
+    </div>
+    <p class="val-note reveal">Change、Broad、Integration、Decision-record、共享产物边界与 AI 防回退清理六类场景的完整记录，见 <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/docs/validation.md" target="_blank" rel="noopener">docs/validation.md</a>。一次小范围测试通过，不会被包装成完整的运行时或用户验收。</p>
+  </div>
+</section>
+
+<section id="usage">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">使用</span>
+      <h2>像跟同事说话一样调用它。</h2>
+      <p class="sub">目标不明确时，Skill 会先询问，不会直接删除代码。</p>
+    </div>
+    <div class="prompt-grid">
+      <div class="prompt reveal"><span class="label">审计 · 不改文件</span><p>使用 $code-janitor 审计这个仓库，列出最安全、收益最高的简化候选。不要修改文件。</p></div>
+      <div class="prompt reveal"><span class="label">调查 · 具体问题</span><p>使用 $code-janitor 判断这些 readiness 标志是在表达不同的生命周期保证，还是重复状态。</p></div>
+      <div class="prompt reveal"><span class="label">修改 · 已证明的简化</span><p>使用 $code-janitor 删除一个高置信度的偶然复杂度来源。保留仍然有效的契约，完成验证，并给出操作回执和撤销路径。</p></div>
+      <div class="prompt reveal"><span class="label">整合 · 别的分支的发现</span><p>使用 $code-janitor 复核并整合这个 PR 中的简化建议。保留证据，不保留候选数量。</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="install" style="background:var(--card); border-block:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">安装</span>
+      <h2>一个包，七个 harness。</h2>
+      <p class="sub">目录必须叫 <code style="font-family:var(--font-mono);font-size:.9em;background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 7px;">code-janitor</code>。选你的平台，复制一条命令。</p>
+    </div>
+    <div class="install-grid reveal">
+      <div class="inst"><span class="name">Codex</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.codex/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.codex/skills/code-janitor">复制</button></div>
+      <div class="inst"><span class="name">Claude Code</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.claude/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.claude/skills/code-janitor">复制</button></div>
+      <div class="inst"><span class="name">Cursor</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .agents/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .agents/skills/code-janitor">复制</button></div>
+      <div class="inst"><span class="name">GitHub Copilot</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .github/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .github/skills/code-janitor">复制</button></div>
+      <div class="inst"><span class="name">Cline</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .cline/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .cline/skills/code-janitor">复制</button></div>
+      <div class="inst"><span class="name">Gemini CLI</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .gemini/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .gemini/skills/code-janitor">复制</button></div>
+      <div class="inst"><span class="name">OpenCode</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .opencode/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .opencode/skills/code-janitor">复制</button></div>
+    </div>
+    <p class="install-req reveal">安装后按平台刷新 Skill 目录。作用域、发现规则与旧 <code>$simplify-codebase</code> 入口的迁移说明，见仓库的 <code>docs/harness-compatibility.md</code>。</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <a class="brand" href="#top"><img src="assets/logo.png" alt="" width="26" height="26">Code Janitor</a>
+      <div class="foot-links">
+        <a href="https://github.com/zhouyuanxinand/code-janitor" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/SKILL.md" target="_blank" rel="noopener">SKILL.md</a>
+        <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/docs/validation.md" target="_blank" rel="noopener">验证记录</a>
+        <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/docs/harness-compatibility.md" target="_blank" rel="noopener">Harness 兼容性</a>
+        <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+      </div>
+    </div>
+    <p class="foot-note">Skill 不能替代产品决策：删除仍然可达的能力或兼容路径，仍需使用者明确授权。© 2026 zhouyuanxinand</p>
+  </div>
+</footer>
+
+<script src="assets/main.js"></script>
+</body>
+</html>

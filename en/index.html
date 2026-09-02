@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Janitor — Prove it, then delete it</title>
+<meta name="description" content="Code Janitor is an evidence-driven Agent Skill for ordinary code simplification and AI anti-regression layer cleanup. Read-only audit first, a proof record per candidate, changes only when authorized, layered validation with a rollback path. Works with Codex, Claude Code, Cursor, Copilot, Cline, Gemini CLI and OpenCode.">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="../assets/icon-192.png?v=1">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png?v=1">
+<meta property="og:title" content="Code Janitor — Prove it, then delete it">
+<meta property="og:description" content="An evidence-driven Agent Skill. Removing lines is only the outcome; the real win is retiring a fact, state, contract or concept the team must keep coherent.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zhouyuanxinand.github.io/code-janitor/en/">
+<meta property="og:image" content="https://zhouyuanxinand.github.io/code-janitor/assets/og.jpg?v=1">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#fafaf7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top"><img src="../assets/logo.png" alt="Code Janitor logo">Code Janitor</a>
+    <div class="nav-links">
+      <a href="#objectives">Objectives</a>
+      <a href="#proof">Proof</a>
+      <a href="#caution">Boundaries</a>
+      <a href="#validation">Validation</a>
+      <a href="#usage">Usage</a>
+      <a href="#install">Install</a>
+    </div>
+    <div class="nav-right">
+      <a class="lang-switch" href="../">中文</a>
+      <a class="gh-btn" href="https://github.com/zhouyuanxinand/code-janitor" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap">
+    <span class="eyebrow">Agent Skill · Evidence-driven · MIT</span>
+    <h1>Prove it, <em>then delete it</em>.</h1>
+    <p class="lede">Code Janitor is a single Agent Skill with two independent objectives: ordinary simplification, and cleanup of AI-generated anti-regression layers. It doesn't chase "more lines removed" — it asks whether a change reduces the concepts and obligations the team must keep coherent from now on.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#install">Install it</a>
+      <a class="btn btn-ghost" href="https://github.com/zhouyuanxinand/code-janitor/blob/main/SKILL.md" target="_blank" rel="noopener">Read SKILL.md</a>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><span class="step-num">01</span><p>Pick one objective — ordinary simplification or AI defensive-layer cleanup. Never mixed.</p></div>
+      <div class="step reveal"><span class="step-num">02</span><p>Read-only audit first; build a proof record for every candidate.</p></div>
+      <div class="step reveal"><span class="step-num">03</span><p>Act only when authorized; validate in layers and hand over a rollback path.</p></div>
+    </div>
+  </div>
+</header>
+
+<section id="visual" style="padding-top:0;">
+  <div class="wrap">
+    <div class="prism-frame reveal">
+      <img src="../assets/hero.jpg" alt="A complex software structure converges, through evidence, into a smaller and clearer system" loading="lazy">
+    </div>
+    <p class="prism-note reveal">A complex structure, passed through evidence, converges into a smaller, clearer system.</p>
+  </div>
+</section>
+
+<section id="objectives" style="background:var(--card); border-block:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">Two objectives</span>
+      <h2>One objective per cut.</h2>
+      <p class="sub">Both share consumer analysis, boundary proof and layered validation — but you must choose first, and never blur the deletion boundary in one batch.</p>
+    </div>
+    <div class="obj-grid">
+      <div class="obj reveal">
+        <span class="tag">objective 1</span>
+        <h3>Ordinary simplification</h3>
+        <p>Identify and safely remove accidental complexity while preserving live behavior, boundaries and compatibility.</p>
+        <div class="scope">
+          <b>Handles</b>
+          <div class="yes">Dead code, duplicate state, ownerless abstractions</div>
+          <div class="yes">Redundant APIs and unnecessary layers</div>
+          <div class="yes">Obsolete compatibility paths, over-engineering</div>
+        </div>
+        <div class="scope">
+          <b>Out of scope</b>
+          <div class="no">Formatting-only changes, general code review</div>
+          <div class="no">Performance tuning</div>
+        </div>
+      </div>
+      <div class="obj reveal">
+        <span class="tag">objective 2</span>
+        <h3>AI defensive-layer cleanup</h3>
+        <p>Clean up the anti-regression layers AI changes leave behind: pick a category first, then prove and remove the maintenance burden.</p>
+        <div class="scope">
+          <b>Handles</b>
+          <div class="yes">Tests added to shield an AI change</div>
+          <div class="yes">Build / deploy / CI guardrails</div>
+          <div class="yes">Static source scans and inventories</div>
+        </div>
+        <div class="scope">
+          <b>Out of scope</b>
+          <div class="no">Code still protecting real business or APIs</div>
+          <div class="no">Security, data-integrity and deployment boundaries</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="trace">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">Why static analysis isn't enough</span>
+      <h2>Lint gives leads, not proof.</h2>
+      <p class="sub">"Nobody calls it" is not "safe to delete". Code Janitor keeps tracing these surfaces before deciding to delete, merge, keep, or mark as unresolved.</p>
+    </div>
+    <div class="trace-grid">
+      <div class="trace reveal"><span class="k">runtime</span><h3>Runtime consumers</h3><p>From entrypoints through configuration, registration and dispatch to the real execution path.</p></div>
+      <div class="trace reveal"><span class="k">dynamic</span><h3>Dynamic registration</h3><p>Reflection, plugin tables, string references — reachability the compiler can't see.</p></div>
+      <div class="trace reveal"><span class="k">persisted</span><h3>Stored formats</h3><p>Persistence, migrations, replay: delete a field and old data may never read back.</p></div>
+      <div class="trace reveal"><span class="k">public</span><h3>Public interfaces</h3><p>Package boundaries, wire formats, external consumers you can't grep for in-repo.</p></div>
+      <div class="trace reveal"><span class="k">history</span><h3>Historical decisions</h3><p>A design still owned by a live ADR or RFC is not redundant debt.</p></div>
+      <div class="trace reveal"><span class="k">verify</span><h3>Validation boundaries</h3><p>What is the smallest check that would expose a wrong cut? No answer, no action.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="proof" class="dark">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">Proof records</span>
+      <h2>Every candidate gets a proof.</h2>
+      <p class="sub">Nine fields turn "I think we can delete this" into reviewable evidence. Incomplete proof means the candidate stays.</p>
+    </div>
+    <div class="proof-box reveal">
+      <div class="proof-head"><span>proof-record.md</span><span>survey · broad</span></div>
+      <pre><span class="f">Candidate</span>     the exact contract, representation, or layer to remove or merge
+<span class="f">Burden</span>        the concepts, synchronization, publication, or testing cost it creates
+<span class="f">Reachability</span>  production, non-production, dynamic, external, and persisted consumers
+<span class="f">Rationale</span>     why it exists and whether that reason remains current
+<span class="f">Cut</span>           declarations, implementations, branches, artifacts, docs, dependencies
+<span class="f">Consequence</span>   observable capability or compatibility behavior surrendered
+<span class="f">Confidence</span>    evidence strength, uncertainty, blast radius, reversibility
+<span class="f">Proof</span>         the smallest check that would expose an incorrect cut
+<span class="f">Net effect</span>    maintenance concepts removed − replacement or migration machinery added</pre>
+    </div>
+    <p class="dark-quote reveal">Deleting lines is only the outcome. The real win is retiring <i>a fact, state, contract or concept</i> the team must keep coherent. A high-value guess never outranks a smaller proved cut.</p>
+  </div>
+</section>
+
+<section id="caution">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">What it treats with care</span>
+      <h2>Boundaries it routes around.</h2>
+    </div>
+    <div class="caut-grid">
+      <div class="caut reveal"><h3>Public APIs &amp; plugin registration</h3><p>Dynamic loading, registry entries, published interfaces.</p></div>
+      <div class="caut reveal"><h3>Data formats &amp; migrations</h3><p>Stored representations, replay, backward compatibility.</p></div>
+      <div class="caut reveal"><h3>Authorization &amp; input validation</h3><p>Isolation, credentials, data-loss prevention — security code is not a defensive layer.</p></div>
+      <div class="caut reveal"><h3>Concurrency &amp; lifecycle</h3><p>Cancellation, cleanup, ownership: the code that establishes quiescence.</p></div>
+      <div class="caut reveal"><h3>Generated files &amp; external consumers</h3><p>Shared resources, vendored code, references outside the repo.</p></div>
+      <div class="caut reveal"><h3>Still-valid ADRs</h3><p>A design still governed by a live decision record is not debt to delete.</p></div>
+    </div>
+    <p class="caut-note reveal">When a real consumer exists, a boundary is unresolved, or a simplification merely relocates complexity, it recommends <b>keeping</b> — instead of deleting to produce a result.</p>
+  </div>
+</section>
+
+<section id="validation" style="background:var(--card); border-block:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">Validation</span>
+      <h2>Not a slogan — exercised scenarios.</h2>
+    </div>
+    <div class="stat-grid">
+      <div class="stat reveal"><div class="n">973</div><div class="l">-file production repo (Python + TypeScript) audited broad, partitioned, with a clean worktree</div></div>
+      <div class="stat reveal"><div class="n">143/143</div><div class="l">frontend tests green after defensive-layer cleanup, plus six API smoke checks</div></div>
+      <div class="stat reveal"><div class="n">29</div><div class="l">guardrail cases safely removed; backend failures matched the known baseline</div></div>
+      <div class="stat reveal"><div class="n">14</div><div class="l">candidate-exclusive CSS classes proved below file granularity in a shared stylesheet</div></div>
+    </div>
+    <p class="val-note reveal">Full records for Change, Broad, Integration, Decision-record, shared-artifact and AI defensive-layer scenarios live in <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/docs/validation.md" target="_blank" rel="noopener">docs/validation.md</a>. A narrow green check is never packaged as full runtime or user acceptance.</p>
+  </div>
+</section>
+
+<section id="usage">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">Usage</span>
+      <h2>Invoke it like a colleague.</h2>
+      <p class="sub">If the objective is unclear, the Skill asks first — it never deletes without one.</p>
+    </div>
+    <div class="prompt-grid">
+      <div class="prompt reveal"><span class="label">Audit · read-only</span><p>Use $code-janitor to audit this repo and list the safest, highest-value simplification candidates. Do not modify files.</p></div>
+      <div class="prompt reveal"><span class="label">Investigate · one question</span><p>Use $code-janitor to decide whether these readiness flags express different lifecycle guarantees or duplicate state.</p></div>
+      <div class="prompt reveal"><span class="label">Change · a proved cut</span><p>Use $code-janitor to remove one high-confidence source of accidental complexity. Preserve live contracts, validate, and hand over an operation receipt and rollback path.</p></div>
+      <div class="prompt reveal"><span class="label">Integrate · another branch</span><p>Use $code-janitor to revalidate and integrate the simplification findings in this PR. Preserve evidence, not finding counts.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="install" style="background:var(--card); border-block:1px solid var(--line);">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow-sm">Install</span>
+      <h2>One package, seven harnesses.</h2>
+      <p class="sub">The directory must be named <code style="font-family:var(--font-mono);font-size:.9em;background:#fff;border:1px solid var(--line);border-radius:6px;padding:1px 7px;">code-janitor</code>. Pick your platform and copy one command.</p>
+    </div>
+    <div class="install-grid reveal">
+      <div class="inst"><span class="name">Codex</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.codex/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.codex/skills/code-janitor">Copy</button></div>
+      <div class="inst"><span class="name">Claude Code</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.claude/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.claude/skills/code-janitor">Copy</button></div>
+      <div class="inst"><span class="name">Cursor</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .agents/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .agents/skills/code-janitor">Copy</button></div>
+      <div class="inst"><span class="name">GitHub Copilot</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .github/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .github/skills/code-janitor">Copy</button></div>
+      <div class="inst"><span class="name">Cline</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .cline/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .cline/skills/code-janitor">Copy</button></div>
+      <div class="inst"><span class="name">Gemini CLI</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .gemini/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .gemini/skills/code-janitor">Copy</button></div>
+      <div class="inst"><span class="name">OpenCode</span><code><span class="p">$</span> git clone https://github.com/zhouyuanxinand/code-janitor.git .opencode/skills/code-janitor</code><button type="button" data-cmd="git clone https://github.com/zhouyuanxinand/code-janitor.git .opencode/skills/code-janitor">Copy</button></div>
+    </div>
+    <p class="install-req reveal">Refresh the skill directory per platform after install. Scope, discovery rules and migration from the old <code>$simplify-codebase</code> entry live in <code>docs/harness-compatibility.md</code>.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <a class="brand" href="#top"><img src="../assets/logo.png" alt="" width="26" height="26">Code Janitor</a>
+      <div class="foot-links">
+        <a href="https://github.com/zhouyuanxinand/code-janitor" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/SKILL.md" target="_blank" rel="noopener">SKILL.md</a>
+        <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/docs/validation.md" target="_blank" rel="noopener">Validation</a>
+        <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/docs/harness-compatibility.md" target="_blank" rel="noopener">Harness compatibility</a>
+        <a href="https://github.com/zhouyuanxinand/code-janitor/blob/main/LICENSE" target="_blank" rel="noopener">MIT License</a>
+      </div>
+    </div>
+    <p class="foot-note">The Skill cannot replace product decisions: removing a still-reachable capability or compatibility path requires explicit user authorization. © 2026 zhouyuanxinand</p>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+</body>
+</html>
