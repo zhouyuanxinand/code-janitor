@@ -36,6 +36,8 @@ Prefer one proven ownership boundary per batch. Remove the complete obligation: 
 
 If removal retires a test/build/static guard but future reintroduction may be useful, create or update a concise handoff note only when the user authorizes documentation changes. Record what was removed, why it was not a live contract, the replacement or reintroduction trigger, and the validation performed.
 
+When a handoff note is created, it must enumerate the exact deleted files and deleted symbols/sections rather than summarizing them only by category. For every entry, state the file's original role, the defensive obligation it enforced, the consumer/boundary evidence that made removal safe, what behavior or operational path remains, and the condition that would justify reintroducing it. For a partially edited file, record the file path plus the removed symbol or section and describe the file-level responsibility that remains. Use the handoff format in [proof and delivery](references/proof-and-delivery.md).
+
 ## Verify and report
 
 After a change, check removed-name residue, run the decisive targeted check, then the affected build/type/test/smoke checks in proportion to risk. Compare failures with the baseline and distinguish pre-existing failures from regressions. Inspect the final diff and report retained candidates and unknown external consumers.

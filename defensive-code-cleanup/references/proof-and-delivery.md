@@ -24,7 +24,25 @@ Do not treat an unreferenced file as proven dead until dynamic imports, package 
 3. Search for removed symbols, paths, configuration keys, and documentation residue.
 4. Run the targeted behavior check, then affected build/type/lint/test/smoke checks.
 5. Inspect the diff and working-tree status. Do not stage generated runtime data or unrelated user changes.
-6. If a handoff note is authorized, state the retired guard, why it was safe to remove, reintroduction conditions, and validation evidence.
+6. If a handoff note is authorized, use an itemized deletion ledger. Do not collapse multiple files into a category summary.
+
+## Handoff deletion ledger
+
+The handoff note must contain one entry for every deleted file and every materially deleted symbol or section in a retained file. A table is preferred:
+
+```text
+Deleted path or retained file + removed symbol/section: exact repository-relative path and name
+Original role: what the file, symbol, or section did before cleanup
+Category: selected cleanup category
+Defensive obligation: the AI-change rollback/anti-regression/static obligation it enforced
+Consumer evidence: runtime/support/dynamic/persisted/external search and boundary findings
+Why safe to remove: why it is not a live business, API, security, persistence, lifecycle, or deployment contract
+Retained behavior: active code, test, build path, or safety boundary that remains
+Reintroduction trigger: the concrete future requirement that would justify restoring it
+Verification: targeted check and affected local gates, including baseline failures if relevant
+```
+
+For a deleted file, explain its original responsibility even if it had no runtime consumer. For a partially edited file, identify the removed implementation-shape guard separately from the file's retained business/API responsibility. Include generated runtime data and unrelated working-tree changes in a separate exclusion note; they are not deletion entries.
 
 ## Stop conditions
 
