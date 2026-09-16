@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:browser": "node --test test/viewer.test.mjs"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "playwright": "1.62.1"
+  }
+}

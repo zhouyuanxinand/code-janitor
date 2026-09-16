@@ -1,30 +1,20 @@
 ---
 name: code-janitor
-description: Audit or change an existing codebase through either ordinary simplification or cleanup of AI-generated defensive and anti-regression layers. First route the request to one objective, then use evidence-backed deletion while preserving live behavior, safety boundaries, and compatibility. Use for 代码简化、熵回收或 AI 修改防回退层清理; do not use for general code review, onboarding, style-only refactoring, or performance tuning.
+description: Simplification audit or authorized codebase simplification whose stated objective is to remove accidental complexity. Use for evidence-backed deletion or consolidation of dead code, duplicate state, redundant APIs or layers, ownerless abstractions, obsolete compatibility or design records, over-engineering, and tests or checks that preserve an obsolete implementation shape; also use for 代码简化、熵回收、实现形态守卫审计或清理. Do not use for general code review, onboarding, style-only refactoring, or performance tuning.
 ---
 
 # Code Janitor
 
-Reduce the number of concepts and obligations a codebase must keep coherent. This Skill has two independent objectives: ordinary simplification and AI defensive-layer cleanup. Line-count reduction is supporting evidence, not the objective. A successful run may conclude that the inspected surface is already justified.
+Reduce the number of concepts and obligations a codebase must keep coherent. Line-count reduction is supporting evidence, not the objective. A successful run may conclude that the inspected surface is already justified.
 
-## Select the objective, mode, and scope
-
-First identify the objective. If the user has not made it clear, ask them to choose one before inspecting or modifying files:
-
-1. **Ordinary simplification** — remove accidental complexity such as dead code, duplicate state, ownerless abstractions, redundant APIs or layers, obsolete compatibility paths, and over-engineering.
-2. **AI defensive-layer cleanup** — remove maintenance-only tests, build/deployment/CI guards, static source scans and inventories, or explicitly selected runtime defensive paths that were added to protect an AI-generated change from regression.
-
-Do not mix the objectives in one unreviewed cut. Both use the shared proof, boundary, authorization, and validation workflow below, but read only the references for the selected objective:
-
-- For ordinary simplification, use [investigation](references/investigation.md), [boundaries and lifecycle](references/boundaries-and-lifecycle.md), [execution and recovery](references/execution-and-recovery.md), and other references as their routing rules require.
-- For AI defensive-layer cleanup, after the user selects one or more defensive categories, read [defensive categories](references/defensive-categories.md) and, for Change mode, [defensive proof and delivery](references/defensive-proof-and-delivery.md).
-
-If the user selects both objectives, maintain separate candidate records, cut boundaries, and validation results.
+## Select mode and scope
 
 First choose the authority mode:
 
 - **Survey** for simplification audit, investigation, or candidate-finding requests. Remain read-only and return ranked evidence.
 - **Change** for explicit simplify, remove, consolidate, refactor, or repository-documentation edit requests. Prove each cut, implement it within the authorized scope, and validate the surviving contract.
+
+A request that only mentions defensive, anti-regression, or AI-generated guardrails without an explicit edit verb or other change authority remains Survey. AI provenance is not deletion evidence and does not lower the proof burden. When a request combines an implementation-shape guardrail with another simplification, keep separate proof records and cut boundaries even when they are validated in the same run.
 
 Then choose the coverage scope:
 
@@ -48,6 +38,8 @@ The contract map is complete when all in-scope entrypoints and authority boundar
 
 For every Broad engagement, and for Focused work involving dynamic architecture or dependency substitution, read [investigation.md](references/investigation.md). Build a coverage map before ranking findings; the first plausible deletion must not end the survey.
 
+For tests, build/deployment/CI, static checks, compatibility or relay layers, and runtime defensive paths, also read [investigation.md](references/investigation.md) and [cleanup-examples.md](references/cleanup-examples.md). Use the examples to discover candidates within the selected scope and the same proof workflow.
+
 For concurrency, cancellation, readiness, cleanup, defensive copies, validation, authorization, security isolation, accessibility, data-loss prevention, or cross-process data, also read [boundaries-and-lifecycle.md](references/boundaries-and-lifecycle.md).
 
 Use repository-native search, compiler and linter output, dependency metadata, and history as discovery instruments. Treat their findings as leads until runtime consumers and contracts have been examined.
@@ -57,7 +49,10 @@ Use repository-native search, compiler and linter output, dependency metadata, a
 For every in-scope lead that reaches consumer-map evidence or could retire a meaningful contract, record:
 
 ```text
+Finding ID: a stable report-local identifier such as S1 or S2
 Candidate: the exact contract, representation, or layer to remove or merge
+Locus: the ownership boundary, symbols, and exact paths or lines when verified
+Topology: confirmed node and relationship IDs, primary locus, related nodes, route, and cut set when useful; otherwise not applicable
 Burden: the concepts, synchronization, publication, or testing cost it creates
 Reachability: production, non-production, dynamic, external, and persisted consumers
 Rationale: why it exists and whether that reason remains current
@@ -67,6 +62,8 @@ Confidence / risk: evidence strength, uncertainty, blast radius, and reversibili
 Proof: the smallest check that would expose an incorrect cut
 Net effect: maintenance concepts removed minus replacement or migration machinery added
 ```
+
+Keep Finding IDs stable within the run so the summary, proof record, source links, and any visual companion refer to the same candidate. Do not invent a line number, owner, relationship, or route to fill the location fields. Mark unknown facts as unresolved.
 
 Prove cut boundaries below file granularity when the candidate shares an artifact with surviving consumers. Account for candidate-exclusive selectors, members, fields, keys, registry entries, generated fragments, and fixtures without disturbing the surviving owners.
 
@@ -82,16 +79,21 @@ In Survey mode, stop after reporting the ranked evidence. Include important reje
 
 In Change mode, read [execution-and-recovery.md](references/execution-and-recovery.md) and select the strongest authorized cut. One ownership boundary is the default batch size, not a run limit: for an explicitly requested set of cuts, finish and validate each boundary before starting the next.
 
-For AI defensive-layer cleanup, a selected category authorizes investigation, not deletion of a live contract. Do not remove security, credential, validation, persistence, lifecycle, or real deployment behavior merely because it is defensive.
-
 If the user requests a simplification proposal, local cleanup annotation, or design-record consolidation, or if a selected change invalidates an ADR, RFC, design note, or architectural inventory, read [decision-records.md](references/decision-records.md). Do not turn an ordinary code audit into a repository-wide documentation purge.
 
 If the user asks to combine findings from another branch, pull request, task, or agent run, read [integrating-findings.md](references/integrating-findings.md). Preserve evidence, not finding counts.
 
+Generate a visual companion only when the user explicitly requests one or confirms an offer. If confirmed relationships would make a candidate clearer, explain what the map would clarify and ask before generating it. Without confirmation, complete the text report without a map; do not wait on visual delivery to finish the audit. For authorized visual delivery, read [visual-reporting.md](references/visual-reporting.md) and use the bundled cleanup-map renderer. The map is an optional companion to the proof records, not evidence by itself. Do not write Survey artifacts into the target repository unless the user requested repository files.
+
 ## Deliver the result
 
-For a survey, report coverage, ranked proof records, rejected or unresolved high-value leads, and the next fact needed for each uncertainty.
+For a survey, report coverage, ranked proof records, rejected or unresolved high-value leads, and the next fact needed for each uncertainty. When a visual companion was requested or confirmed, report its status and cleanup-map Finding deep links separately.
 
-For a change, complete the validation and operation receipt defined in [execution-and-recovery.md](references/execution-and-recovery.md). Report each validation layer separately; a narrow green check does not establish broader runtime, deployment, or user acceptance.
+Keep the handoff scan-friendly. Lead with the result, then include only the
+proof records, decision-relevant uncertainty, visual links, and validation that
+the user needs. Do not narrate the search process, repeat the same evidence
+under several labels, append generic advice, or keep empty sections. Concision
+does not remove required proof fields: write each field once, in the shortest
+form that preserves its subject, evidence strength, consequence, and boundary.
 
-For AI defensive-layer cleanup, if the user authorizes a Handoff note, enumerate every deleted file and every materially deleted symbol or section in a retained file. For each entry state its original role, defensive obligation, consumer evidence, reason it was safe to remove, retained behavior, reintroduction trigger, and verification. Follow [defensive proof and delivery](references/defensive-proof-and-delivery.md).
+For a change, complete the validation and operation receipt defined in [execution-and-recovery.md](references/execution-and-recovery.md). A Before/Cut/After/Verify cleanup map may explain a structural change, but it never replaces the operation receipt. Report each validation layer separately; a narrow green check does not establish broader runtime, deployment, or user acceptance.

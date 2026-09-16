@@ -13,35 +13,19 @@
 
 </div>
 
-本仓库提供一个统一的 `code-janitor` Agent Skill，包含两个互不混用的处理目标：
-
-- **普通代码简化**：识别并安全移除偶然复杂度，同时保护仍然有效的行为、边界与兼容性。
-- **AI 防回退层清理**：处理 AI 修改过程中产生的测试、构建、CI、静态检查和其他防回退层；先选择防回退类别，再证明并移除维护性负担。
-
-两个目标共享消费者分析、边界证明和分层验证流程，但必须先选择目标，不在同一批次中混淆删除边界。
+`code-janitor` 是一个面向现有代码库的 Agent Skill。它帮助编码智能体识别并安全移除偶然复杂度，同时保护仍然有效的行为、边界与兼容性。
 
 它不追求“删得多”。它关心的是：一次改动能否减少团队今后必须持续保持一致的概念和义务。
-
-| 处理目标 | 适用场景 | 不会处理的内容 |
-| --- | --- | --- |
-| 普通代码简化 | 死代码、重复状态、失主抽象、过期兼容层和不必要的分层 | 仅做格式化、普通代码审查或性能调优 |
-| AI 防回退层清理 | 为保护 AI 改动而临时增加的测试、构建/CI 守卫、静态扫描和清单 | 仍保护真实业务、API、安全、数据或部署边界的代码 |
-
-## 快速开始
-
-1. 从下方选择一个目标 Harness 的目录安装，目录必须叫 `code-janitor`。
-2. 新建任务并明确选择处理目标；目标不明确时，Skill 会先询问，不会直接删除代码。
-3. 先用只读审计建立候选和反证，再授权修改；防回退层清理需要先选定类别。
-
-```text
-使用 $code-janitor 处理这个仓库。先让我选择：普通代码简化，还是 AI 修改防回退层清理；不要修改文件。
-```
 
 ## 为什么需要它
 
 代码库里的冗余很少只是“某个函数没人调用”。它也可能是重复状态、失去所有者的抽象、只剩测试消费的接口、早已无效的兼容路径，或者被保留在共享文件中的半截功能。
 
 静态检查可以提供线索，但不能单独证明一项删除是安全的。这个 Skill 会继续追踪运行时消费者、动态注册、持久化格式、公共接口、历史决策与验证边界，再决定应该删除、合并、保留，还是标记为暂时无法判断。
+
+它也会识别“实现形态守卫”：只约束目录结构、源文本、私有默认值、固定组件数量或历史实现身份，却不再保护可观察行为的测试、静态扫描、清单和构建/CI 检查。AI 是否生成过这些代码不是删除证据；业务、API、安全、持久化、并发、真实部署、集成行为和仍生效的工程策略守卫仍按普通契约保留。
+
+[五类清理示例](./references/cleanup-examples.md)覆盖测试、构建/部署/CI、静态检查、兼容与中继层、运行时防御路径，统一使用下述调查、证明和执行流程。
 
 > **核心原则：** 删除代码行只是结果。真正的收益是删除一个需要长期维护的事实、状态、契约或概念。
 
@@ -54,6 +38,7 @@
 
 每个候选都要形成一份证明记录：
 
+- 它位于哪个所有权边界、符号、文件，以及能够验证时的行号；
 - 它增加了什么维护负担；
 - 生产、测试、动态和外部消费者分别是谁；
 - 完整删除边界在哪里，包括共享文件内部的成员；
@@ -74,32 +59,22 @@
 
 ## 安装
 
-该包使用通用 Agent Skills 目录形态，并要求安装目录名为 `code-janitor`。已对齐 Codex、Claude Code、Cursor、GitHub Copilot、Cline、Gemini CLI 与 OpenCode；选择你的 harness 对应的一条命令执行即可：
+让 Codex 安装：
 
-```bash
-# Codex（用户级）
-git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.codex/skills/code-janitor
-
-# Claude Code（用户级）
-git clone https://github.com/zhouyuanxinand/code-janitor.git ~/.claude/skills/code-janitor
-
-# Cursor / 通用项目级 Agent Skills
-git clone https://github.com/zhouyuanxinand/code-janitor.git .agents/skills/code-janitor
-
-# GitHub Copilot（项目级）
-git clone https://github.com/zhouyuanxinand/code-janitor.git .github/skills/code-janitor
-
-# Cline（项目级）
-git clone https://github.com/zhouyuanxinand/code-janitor.git .cline/skills/code-janitor
-
-# Gemini CLI（项目级）
-git clone https://github.com/zhouyuanxinand/code-janitor.git .gemini/skills/code-janitor
-
-# OpenCode（项目级）
-git clone https://github.com/zhouyuanxinand/code-janitor.git .opencode/skills/code-janitor
+```text
+Install the code-janitor skill from https://github.com/zhouyuanxinand/code-janitor
 ```
 
-安装后按平台刷新/重启 Skill 目录。完整的作用域、发现规则、验证方法、优先级和旧 `$simplify-codebase` 入口的迁移说明见 [跨 Harness 兼容性](./docs/harness-compatibility.md)。同一项目只应在一个预期优先级目录保留一份同名 Skill，除非明确需要覆盖。
+也可以手动安装到 Codex 的用户级 Skill 目录：
+
+```bash
+git clone https://github.com/zhouyuanxinand/code-janitor.git \
+  ~/.codex/skills/code-janitor
+```
+
+安装后请新建一个任务，让 Skill 目录重新加载。其他支持 `SKILL.md` 的 Agent 环境可将本仓库放入各自的 Skill 目录。
+
+可交互 Cleanup Map 已内置在本 Skill 中，不需要另外安装 Archify。它直接内置精简后的 Architecture 渲染与桌面交互核心，再叠加清理专用编译和 Survey/Change 交互。renderer 需要 Node.js 18 或更高版本，不依赖额外 npm 包；交付的 HTML 不会请求外部字体。
 
 ## 使用
 
@@ -127,17 +102,17 @@ git clone https://github.com/zhouyuanxinand/code-janitor.git .opencode/skills/co
 使用 $code-janitor 复核并整合这个 PR 中的简化建议。保留证据，不保留候选数量。
 ```
 
-### 选择 AI 防回退层清理目标
+### 调查实现形态守卫
 
 ```text
-使用 $code-janitor 处理这个仓库。先让我选择：普通代码简化，还是 AI 修改防回退层清理；不要修改文件。
+使用 $code-janitor 审计测试、构建/CI 和静态检查里只保护旧实现形态的守卫。不要修改文件，并保留仍然保护业务、安全、部署、集成行为或仍生效工程策略的检查。
 ```
+
+### 生成可视化伴随报告
 
 ```text
-选择 AI 修改防回退层清理。清理测试防回退层、构建部署与 CI 防回退层、静态检查脚本与清单。保留业务、API、安全、数据完整性和真实部署行为。
+使用 $code-janitor 审计这个仓库，并生成带 Finding 深链接的 Cleanup Map。文字证明记录作为权威结果；只画已确认的组件和关系，不要把图上可达关系称为运行时影响范围。
 ```
-
-AI 防回退层模式支持测试防回退层、构建/部署/CI 防回退层、静态检查防回退层、兼容与中继层、运行时防御路径和自定义范围。运行时重试、回退、修复和恢复路径风险较高，只有在用户明确授权且证据证明不再保护真实边界时才处理。
 
 ## 输出是什么样的
 
@@ -145,37 +120,54 @@ AI 防回退层模式支持测试防回退层、构建/部署/CI 防回退层、
 
 修改任务会额外交付实际变更、分层验证结果、剩余风险、操作回执与可执行的撤销路径。一次小范围测试通过，不会被包装成完整的运行时或用户验收。
 
-如果用户授权生成 Handoff，防回退清理必须逐项记录每个删除文件、删除符号或删除区段：原本作用、防回退职责、消费者证据、为何安全删除、保留的行为、重新引入条件和验证结果。不能只写“删除了测试”或“删除了脚本”等分类汇总。
+默认交付完整的文字报告。用户明确要求可视化时，Skill 可直接使用内置 renderer 生成经过校验的桌面端交互 HTML；用户未要求时，即使问题横跨多个组件、状态或消费者，也会先说明图能帮助看清什么，得到确认后才生成。未确认不会自动出图，也不影响文字审计完成。
+
+Survey 按“定位、路径、删除边界、判断”组织，Change 按“变更前、删除边界、变更后、验证”组织。它是 proof record 的视觉伴随物，不替代消费者证明、Change 操作回执或撤销路径。拓扑尚未证明或图没有额外解释价值时，保留带精确文件定位的完整文字报告。
 
 ## 仓库结构
 
 ```text
 .
 ├── SKILL.md                    # 主工作流与判断标准
+├── PRODUCT.md                  # 可视化产品定位与渐进披露原则
 ├── agents/openai.yaml          # Agent 展示与调用元数据
 ├── references/
 │   ├── investigation.md        # 全库调查与候选发现
+│   ├── cleanup-examples.md     # 五类清理线索与保留边界
 │   ├── boundaries-and-lifecycle.md
 │   ├── execution-and-recovery.md
 │   ├── decision-records.md
 │   ├── integrating-findings.md
-│   ├── defensive-categories.md
-│   └── defensive-proof-and-delivery.md
+│   └── visual-reporting.md     # 可选视觉伴随层的真实性与交付契约
+├── visualization/
+│   ├── cleanup-map.schema.json # 清理专用语义契约
+│   ├── render-cleanup-map.mjs  # Cleanup Map → Archify Architecture 编译与交付
+│   ├── archify-core/           # 内置的 Architecture renderer 与桌面 viewer 核心
+│   ├── cleanup-extension.*     # Survey / Change 专用交互与视觉扩展
+│   ├── examples/               # Survey 与 Change 输入示例
+│   └── test/                   # 契约、路径与产物测试
 ├── docs/validation.md          # 行为验证与质量证据
-├── docs/harness-compatibility.md # 跨平台安装与验证
-├── assets/hero.png             # 原创 Hero 视觉
-└── LICENSE
+├── docs/fixtures/implementation-shape-guardrail/
+│                                # 实现形态守卫的可复现 fixture、补丁与回执
+├── docs/visual-report-example.md
+└── assets/hero.png             # 原创 Hero 视觉
 ```
 
 ## 质量与边界
 
-这个版本经过 Change、Broad、Integration 和 Decision-record 场景验证，也在一个 973 文件的 Python + TypeScript 项目上完成过全库审计。测试方法与已知边界记录在 [docs/validation.md](./docs/validation.md)。跨 harness 的目录与元数据契约见 [docs/harness-compatibility.md](./docs/harness-compatibility.md)。
+上游工作流记录了 Change、Broad、Integration 和 Decision-record 场景验证，以及一个 973 文件的 Python + TypeScript 项目的全库审计。本仓库继承的历史证据、本次集成检查与已知边界分别记录在 [docs/validation.md](./docs/validation.md)。
 
-Skill 不能替代产品决策。删除仍然可达的能力、已支持接口、持久化表示或兼容路径时，仍需由使用者明确授权。AI 防回退模式也不能把安全校验、凭据处理、数据完整性、访问隔离或持久化恢复误判为普通防回退代码。
+视觉伴随层直接内置 Archify 的 Architecture renderer、Signal Flow 视觉系统和桌面 viewer 运行时，并在其上增加 Finding、Survey/Change 阶段、删除边界和按需证据抽屉。默认界面先用一两句话说清问题，再让源码、路径和决策证据随阶段展开；图始终占据主要视觉空间。其他通用图种、仓库 CLI、发布与图库流程没有搬入。来源、修改边界和 MIT 许可保留在 [`visualization/`](./visualization/)；报告格式示例见 [docs/visual-report-example.md](./docs/visual-report-example.md)。
+
+Skill 不能替代产品决策。删除仍然可达的能力、已支持接口、持久化表示或兼容路径时，仍需由使用者明确授权。
 
 ## 贡献
 
 欢迎提交 Issue 和 PR。请优先提供失败案例、遗漏的消费者、错误删除风险或可以复现的验证缺口；这比单纯增加更多规则更有价值。
+
+## 来源
+
+本版本基于 [Simplify Codebase PR #3 的 `728b1d4`](https://github.com/tt-a1i/simplify-codebase/pull/3/commits/728b1d47eec764792ae64bf20d60ad81edc23762)，融入 Code Janitor 的五类清理示例，并保留 `$code-janitor` 调用入口。
 
 ## License
 

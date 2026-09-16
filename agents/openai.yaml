@@ -1,7 +1,7 @@
 interface:
   display_name: "Code Janitor"
-  short_description: "Simplify code or clean AI defensive layers"
-  default_prompt: "Use $code-janitor. First ask whether to simplify accidental complexity or clean AI-generated defensive layers, then audit without editing files."
+  short_description: "Prove and remove accidental codebase complexity"
+  default_prompt: "Use $code-janitor to audit this repository and rank the safest high-impact simplifications without editing files."
 
 policy:
   allow_implicit_invocation: true

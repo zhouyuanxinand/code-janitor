@@ -13,12 +13,7 @@
 
 </div>
 
-This repository provides one unified `code-janitor` Agent Skill with two independent objectives:
-
-- **Ordinary simplification**: find and safely remove accidental complexity while protecting behavior, boundaries, and compatibility that still matter.
-- **AI defensive-layer cleanup**: remove tests, build/CI guards, static checks, and other maintenance-only layers added to protect an AI-generated change from regression.
-
-Both objectives share consumer analysis, boundary proof, and layered validation, but the objective must be selected before the deletion boundary is defined.
+`code-janitor` is an Agent Skill for finding and safely removing accidental complexity from an existing codebase while protecting behavior, boundaries, and compatibility that still matter.
 
 It does not optimize for deletion volume. It asks whether a change reduces the number of concepts and obligations a team must keep coherent over time.
 
@@ -27,6 +22,10 @@ It does not optimize for deletion volume. It asks whether a change reduces the n
 Codebase entropy is rarely just an unused function. It can be duplicated state, an ownerless abstraction, an interface consumed only by tests, an obsolete compatibility path, or half of a retired feature still embedded in a shared artifact.
 
 Static analysis can surface leads, but it cannot prove a deletion safe by itself. This Skill follows runtime consumers, dynamic registration, persisted formats, public interfaces, design history, and verification boundaries before classifying a candidate as remove, merge, retain, or unresolved.
+
+It also recognizes implementation-shape guardrails: tests, static scans, inventories, and build/CI checks that constrain directory layout, literal source text, private defaults, exact component counts, or a historical implementation identity without protecting observable behavior. AI authorship is not removal evidence; business, API, security, persistence, concurrency, real deployment, integration behavior, and active engineering policy guards remain ordinary live contracts.
+
+[Five cleanup examples](./references/cleanup-examples.md) cover tests, build/deployment/CI, static checks, compatibility and relay layers, and runtime defensive paths. They use the shared investigation, proof, and execution workflow below.
 
 > **Core principle:** deleted lines are an outcome. The durable gain is deleting a fact, state, contract, or concept that no longer needs maintenance.
 
@@ -39,6 +38,7 @@ Static analysis can surface leads, but it cannot prove a deletion safe by itself
 
 Every serious candidate receives a proof record covering:
 
+- the exact ownership boundary, symbol, file, and verified source range where available;
 - the maintenance burden it creates;
 - production, test, dynamic, and external consumers;
 - the complete cut, including candidate-owned members inside shared files;
@@ -61,39 +61,22 @@ When a real consumer exists, a boundary remains unresolved, or a proposal merely
 
 ## Install
 
-This package uses the portable Agent Skills directory form and requires the installation directory to be named `code-janitor`. Run the command for one target harness:
+Ask Codex to install it:
 
-```bash
-# Codex, user scope
-git clone https://github.com/zhouyuanxinand/code-janitor.git \
-  ~/.codex/skills/code-janitor
-
-# Claude Code, user scope
-git clone https://github.com/zhouyuanxinand/code-janitor.git \
-  ~/.claude/skills/code-janitor
-
-# Cursor / portable project Agent Skills
-git clone https://github.com/zhouyuanxinand/code-janitor.git \
-  .agents/skills/code-janitor
-
-# GitHub Copilot, project scope
-git clone https://github.com/zhouyuanxinand/code-janitor.git \
-  .github/skills/code-janitor
-
-# Cline, project scope
-git clone https://github.com/zhouyuanxinand/code-janitor.git \
-  .cline/skills/code-janitor
-
-# Gemini CLI, project scope
-git clone https://github.com/zhouyuanxinand/code-janitor.git \
-  .gemini/skills/code-janitor
-
-# OpenCode, project scope
-git clone https://github.com/zhouyuanxinand/code-janitor.git \
-  .opencode/skills/code-janitor
+```text
+Install the code-janitor skill from https://github.com/zhouyuanxinand/code-janitor
 ```
 
-Refresh or restart skill discovery after installation. See [Harness compatibility](./docs/harness-compatibility.md) for scope, discovery, verification, and migration from the former `$simplify-codebase` invocation.
+Or clone it into the Codex user Skill directory:
+
+```bash
+git clone https://github.com/zhouyuanxinand/code-janitor.git \
+  ~/.codex/skills/code-janitor
+```
+
+Start a new task after installation so the Skill catalog refreshes. For other Agent environments that support `SKILL.md`, place the repository in that environment's Skill directory.
+
+The interactive Cleanup Map is bundled with this Skill; Archify does not need to be installed separately. It vendors a trimmed Architecture renderer and desktop interaction core, then adds cleanup-specific compilation and Survey/Change behavior. The renderer requires Node.js 18 or newer, has no npm package dependency, and produces HTML without external font requests.
 
 ## Use
 
@@ -121,17 +104,17 @@ Use $code-janitor to remove one high-confidence source of accidental complexity.
 Use $code-janitor to verify and integrate the simplification findings from this PR. Preserve evidence, not finding counts.
 ```
 
-### Choose AI defensive-layer cleanup
+### Investigate implementation-shape guardrails
 
 ```text
-Use $code-janitor for this repository. First ask me to choose ordinary simplification or AI defensive-layer cleanup; do not edit files yet.
+Use $code-janitor to audit tests, build/CI, and static checks that only preserve an obsolete implementation shape. Do not modify files, and retain checks that still protect business, security, deployment, integration behavior, or active engineering policy.
 ```
+
+### Add a visual companion
 
 ```text
-Choose AI defensive-layer cleanup. Remove test guardrails, build/deployment/CI guardrails, and static-check scripts and inventories. Preserve business behavior, APIs, security, data integrity, and real deployment behavior.
+Use $code-janitor to audit this repository and generate a Cleanup Map with deep links for each visualized Finding ID. Keep the written proof records authoritative. Draw only confirmed components and relationships; do not call authored graph reachability runtime impact.
 ```
-
-The AI defensive-layer mode supports test guardrails, build/deployment/CI guardrails, static-check guardrails, compatibility and relay layers, runtime defensive paths, and custom scope. Runtime retries, fallbacks, repairs, and recovery paths are high risk and require explicit authorization plus evidence that no real boundary is protected.
 
 ## What it returns
 
@@ -139,37 +122,54 @@ A read-only survey returns coverage, ranked proof records, important counterexam
 
 A change task also returns the implemented cut, validation results by layer, remaining risk, an operation receipt, and an executable undo path. A narrow green check is never presented as complete runtime or user acceptance.
 
-When a Handoff is authorized for defensive cleanup, it must list every deleted file, symbol, or section with its original role, defensive obligation, consumer evidence, removal rationale, retained behavior, reintroduction trigger, and verification result.
+The default delivery is a complete text report. An explicit request for visualization authorizes the Skill to generate a validated desktop interactive HTML artifact with its bundled renderer. Otherwise, even when a finding crosses several components, states, or consumers, the Skill first explains what a map would clarify and waits for confirmation before generating it. Without confirmation, it completes the text audit without a map.
+
+Survey follows Locate, Trace, Cut, and Decide; Change follows Before, Cut, After, and Verify. The map remains a visual companion to the proof record, never a substitute for consumer evidence, the Change operation receipt, or the undo path. When topology remains unresolved or a map adds no explanatory value, the complete text report with exact source locations remains the delivery.
 
 ## Repository layout
 
 ```text
 .
 ├── SKILL.md                    # Core workflow and decision rules
+├── PRODUCT.md                  # Visualization product and disclosure principles
 ├── agents/openai.yaml          # Agent-facing metadata
 ├── references/
 │   ├── investigation.md        # Broad investigation and discovery
+│   ├── cleanup-examples.md     # Five cleanup surfaces and retained contracts
 │   ├── boundaries-and-lifecycle.md
 │   ├── execution-and-recovery.md
 │   ├── decision-records.md
 │   ├── integrating-findings.md
-│   ├── defensive-categories.md
-│   └── defensive-proof-and-delivery.md
+│   └── visual-reporting.md     # Truth and delivery contract for optional visuals
+├── visualization/
+│   ├── cleanup-map.schema.json # Cleanup-specific semantic contract
+│   ├── render-cleanup-map.mjs  # Cleanup Map to Archify Architecture compiler
+│   ├── archify-core/           # Vendored Architecture renderer and desktop viewer
+│   ├── cleanup-extension.*     # Survey and Change interaction extension
+│   ├── examples/               # Survey and Change inputs
+│   └── test/                   # Contract, route, and artifact tests
 ├── docs/validation.md          # Behavioral validation evidence
-├── docs/harness-compatibility.md # Cross-harness installation and validation
-├── assets/hero.png             # Original hero artwork
-└── LICENSE
+├── docs/fixtures/implementation-shape-guardrail/
+│                                # Reproducible guardrail fixture, patches, and receipts
+├── docs/visual-report-example.md
+└── assets/hero.png             # Original hero artwork
 ```
 
 ## Quality and boundaries
 
-This version has been exercised in Change, Broad, Integration, and Decision-record scenarios, including a full survey of a 973-file Python + TypeScript project. See [docs/validation.md](./docs/validation.md) for the method and known limits, and [docs/harness-compatibility.md](./docs/harness-compatibility.md) for the cross-harness directory and metadata contract.
+The upstream workflow records Change, Broad, Integration, and Decision-record validation, including a full survey of a 973-file Python + TypeScript project. See [docs/validation.md](./docs/validation.md) for inherited historical evidence, checks for this integration, and known limits.
+
+The visual companion directly vendors Archify's Architecture renderer, Signal Flow visual system, and desktop viewer runtime, then adds Findings, Survey/Change stages, cut boundaries, and an on-demand evidence drawer. The default surface first uses a concise analysis finding to orient the user, then discloses source, route, and decision evidence with the active stage while the graph keeps the primary visual space. Other general diagram renderers, the repository CLI, publishing, and gallery flows are not included. Attribution, adaptation notes, and the MIT license are preserved under [`visualization/`](./visualization/). See [docs/visual-report-example.md](./docs/visual-report-example.md) for the handoff format.
 
 The Skill does not replace product judgment. Removing a reachable capability, supported interface, persisted representation, or compatibility path still requires explicit user authority.
 
 ## Contributing
 
 Issues and pull requests are welcome. Reproducible failure cases, missed consumers, unsafe-deletion risks, and verification gaps are more valuable than adding rules without observed evidence.
+
+## Provenance
+
+This version builds on [Simplify Codebase PR #3 at `728b1d4`](https://github.com/tt-a1i/simplify-codebase/pull/3/commits/728b1d47eec764792ae64bf20d60ad81edc23762), incorporates Code Janitor's five cleanup examples, and preserves the `$code-janitor` entry point.
 
 ## License
 

@@ -1,0 +1,43 @@
+name: Cleanup Map
+
+on:
+  push:
+    paths:
+      - 'visualization/**'
+      - '.github/workflows/cleanup-map.yml'
+  pull_request:
+    paths:
+      - 'visualization/**'
+      - '.github/workflows/cleanup-map.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [18, 22]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          package-manager-cache: false
+      - name: Test standalone renderer
+        if: matrix.node == 18
+        run: node --test visualization/test/render-cleanup-map.test.mjs
+      - name: Install test dependencies
+        if: matrix.node == 22
+        run: npm ci --prefix visualization
+      - name: Install Chromium
+        if: matrix.node == 22
+        run: node visualization/node_modules/playwright/cli.js install --with-deps chromium
+      - name: Test renderer and browser behavior
+        if: matrix.node == 22
+        run: npm --prefix visualization test
